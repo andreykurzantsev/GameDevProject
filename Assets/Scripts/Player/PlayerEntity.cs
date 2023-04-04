@@ -18,9 +18,12 @@ namespace Player
         [SerializeField] private Transform _groundCheck;
         [SerializeField] private float _groundCheckRadius;
         [SerializeField] private LayerMask _groundLayer;
+        [SerializeField] private Animator _animator;
 
         private Rigidbody2D _rigidbody;
         private bool _isOnGround;
+        private AnimationType _currentAnimationType;
+        private Vector2 _movement;
 
 
         // Start is called before the first frame update
@@ -31,6 +34,7 @@ namespace Player
 
         private void Update()
         {
+            UpdateAnimations();
             if (!_isOnGround)
             {
                 UpdateJump();
@@ -75,6 +79,7 @@ namespace Player
             Vector2 velocity = _rigidbody.velocity;
             velocity.x = direction * _horizontalSpeed;
             _rigidbody.velocity = velocity;
+            _movement.x = direction;
         }
 
         private void SetDirection(float direction)
@@ -90,6 +95,37 @@ namespace Player
         {
             transform.Rotate(0, 180, 0);
             _faceRight = !_faceRight;
+        }
+        private void UpdateAnimations()
+        {
+            PlayAnimation(AnimationType.Idle, true);
+            PlayAnimation(AnimationType.Run, _movement.magnitude > 0);
+            PlayAnimation(AnimationType.Jump, !IsOnGround());
+        }
+        private void PlayAnimation(AnimationType animationType, bool active)
+        {
+            if(!active)
+            {
+                if(_currentAnimationType != animationType || _currentAnimationType == AnimationType.Idle)
+                {
+                    return;
+                }
+                _currentAnimationType = AnimationType.Idle;
+                PlayAnimation(_currentAnimationType);
+                return;
+            }
+            if(_currentAnimationType>=animationType)
+            {
+                return;
+            }
+            _currentAnimationType = animationType;
+            PlayAnimation(_currentAnimationType);
+            return;
+
+        }
+        private void PlayAnimation(AnimationType animationType)
+        {
+            _animator.SetInteger(nameof(AnimationType), (int)animationType);
         }
 
     }
