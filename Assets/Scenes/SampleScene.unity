@@ -222,6 +222,7 @@ GameObject:
   - component: {fileID: 225664316}
   - component: {fileID: 225664318}
   - component: {fileID: 225664319}
+  - component: {fileID: 225664320}
   m_Layer: 0
   m_Name: Murder
   m_TagString: Untagged
@@ -343,6 +344,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a312f5ec917e4d54f838cbda5bfe958e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _animator: {fileID: 225664320}
   _horizontalSpeed: 8
   _faceRight: 1
   _jumpForce: 1500
@@ -398,6 +400,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!114 &225664320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 225664310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42cb08f8d40a15548add65c641728b83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 225664319}
 --- !u!1 &247264841
 GameObject:
   m_ObjectHideFlags: 3

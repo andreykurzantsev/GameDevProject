@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Player.PlayerAnimation;
 
 namespace Player
 {
@@ -18,11 +19,10 @@ namespace Player
         [SerializeField] private Transform _groundCheck;
         [SerializeField] private float _groundCheckRadius;
         [SerializeField] private LayerMask _groundLayer;
-        [SerializeField] private Animator _animator;
+        [SerializeField] private AnimatorController _animator;
 
         private Rigidbody2D _rigidbody;
         private bool _isOnGround;
-        private AnimationType _currentAnimationType;
         private Vector2 _movement;
 
 
@@ -98,34 +98,30 @@ namespace Player
         }
         private void UpdateAnimations()
         {
-            PlayAnimation(AnimationType.Idle, true);
-            PlayAnimation(AnimationType.Run, _movement.magnitude > 0);
-            PlayAnimation(AnimationType.Jump, !IsOnGround());
+            _animator.PlayAnimation(AnimationType.Idle, true);
+            _animator.PlayAnimation(AnimationType.Run, _movement.magnitude > 0);
+            _animator.PlayAnimation(AnimationType.Jump, !IsOnGround());
         }
-        private void PlayAnimation(AnimationType animationType, bool active)
-        {
-            if(!active)
-            {
-                if(_currentAnimationType != animationType || _currentAnimationType == AnimationType.Idle)
-                {
-                    return;
-                }
-                _currentAnimationType = AnimationType.Idle;
-                PlayAnimation(_currentAnimationType);
-                return;
-            }
-            if(_currentAnimationType>=animationType)
-            {
-                return;
-            }
-            _currentAnimationType = animationType;
-            PlayAnimation(_currentAnimationType);
-            return;
 
-        }
-        private void PlayAnimation(AnimationType animationType)
+        public void StartAttack()
         {
-            _animator.SetInteger(nameof(AnimationType), (int)animationType);
+            if (!_animator.PlayAnimation(AnimationType.Attack, true))
+                return;
+
+            _animator.ActionRequested += Attack;
+            _animator.AnimationEnded += EndAttack;
+        }
+
+        private void Attack()
+        {
+            Debug.Log("Attack");
+        }
+
+        private void EndAttack()
+        {
+            _animator.ActionRequested -= Attack;
+            _animator.AnimationEnded -= EndAttack;
+            _animator.PlayAnimation(AnimationType.Attack, false);
         }
 
     }
